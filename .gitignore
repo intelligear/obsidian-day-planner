@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Claude Code local overrides (machine-specific permissions)
+.claude/settings.local.json
+
+# User data created after install (not part of the template)
+zzArchive/
+*.canvas
+
+# Daily notes at vault root (MM-DD (ddd).md)
+??-?? (*).md
+
+# Obsidian app state (created by /planner-setup on each machine)
+.obsidian/

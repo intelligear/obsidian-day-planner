@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sL https://api.github.com/repos/ivan-lednev/obsidian-day-planner/releases/latest)"
+    ]
+  }
+}

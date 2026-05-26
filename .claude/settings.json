@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x .claude/scripts/*)",
+      "Bash(bash .claude/scripts/*)",
+      "Bash(cat .claude/.config*)",
+      "Bash(echo *)",
+      "Read(*.md)",
+      "Write(*.md)",
+      "Read(.claude/.config)",
+      "Write(.claude/.config)",
+      "Bash(ls .obsidian/*)",
+      "Read(.obsidian/**)",
+      "Write(.obsidian/**)",
+      "Bash(curl * https://github.com/ivan-lednev/obsidian-day-planner/*)",
+      "Bash(curl * https://api.github.com/repos/kepano/obsidian-skills/*)",
+      "Read(Backlog/**)",
+      "Write(Backlog/**)"
+    ]
+  }
+}
