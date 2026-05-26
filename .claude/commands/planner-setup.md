@@ -15,8 +15,8 @@ Ask the user these questions in order and wait for answers before making changes
 1. Should the official `kepano/obsidian-skills` package be installed into this vault's `.claude/` area? Default: `yes`
 2. Where should daily notes live? Default: vault root (leave empty). Enter a folder name only if you want them in a subfolder (e.g. `Daily/`).
 3. What folder should hold backlog category pages? Default: `Backlog/`
-4. What is the default backlog page name (used when no category is specified)? Default: `Brain Dump`
-5. What backlog categories should be created? Ask for a short comma-separated list, e.g. `Wellbeing, Personal Project, Study`. The default backlog page will be created automatically; only list additional categories here.
+4. What is the default backlog page name (used when no category is specified)? Default: `Brain Dump`. GTD-style alternative: `Inbox`.
+5. What backlog categories should be created? Ask for a short comma-separated list, e.g. `Wellbeing, Business, Study`. The default backlog page from question 4 will be created automatically — do not list it again here.
 6. Should old daily notes be auto-archived? Accept:
    - `yes` = enable with default retention 30 days
    - a number = enable with that retention in days
