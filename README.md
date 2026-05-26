@@ -1,6 +1,7 @@
-# Obsidian Claude Daily Planner
+# Obsidian Daily Planner (w/ Claude Code)
 
 ## Why?
+
 We rarely execute our daily plans perfectly, so why do we bother making them?
 
 **Immediate Direction**
