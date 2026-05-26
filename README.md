@@ -23,6 +23,7 @@ Daily planning provides a continuous reality check on your life and career. It r
 ## 1. Prerequisites
 
 **Supported platform:** macOS.
+
 **Required:**
 
 1. **Obsidian** — [https://obsidian.md](https://obsidian.md) (free)
