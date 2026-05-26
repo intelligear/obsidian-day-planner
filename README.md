@@ -60,7 +60,10 @@ npx degit <github-user>/<this-repo> . --force
 
 This copies the workflow into your vault without git history. `--force` allows installing into a folder that already has files.
 
-> If `degit` refuses a non-empty folder, use Option A, or unzip to a temp folder and move the contents into your vault manually.
+If the degit command didn't actually copy the remote repo, try clear its cache:
+`rm -rf ~/.degit && npx degit intelligear/obsidian-day-planner . --force --verbose`
+
+If `degit` refuses a non-empty folder, use Option A, or unzip to a temp folder and move the contents into your vault manually.
 
 ### After install
 
