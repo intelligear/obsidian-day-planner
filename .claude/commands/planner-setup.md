@@ -88,10 +88,8 @@ A backlog page is just a flat list of unchecked tasks — no H1 and no section h
 ```
 
 ### Daily note template
-No date H1. Two H1 sections, Timeline items use checkbox format.
+No date H1. A single `# Timeline` H1 section — all task checkboxes (untimed at the top, timed entries below in chronological order) live under it.
 ```md
-# Today tasks
-
 # Timeline
 ```
 

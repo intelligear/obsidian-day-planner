@@ -21,32 +21,32 @@ Do not read `Obsidian Claude Workflow Config.md` in the vault root; it is a lega
 - **One-time tasks** are moved to the daily note; they can be moved back to backlog if deferred.
 - Completed tasks remain in the daily note where they were completed — never moved back to backlog.
 - The daily note is both plan and journal.
-- Timeline entries are checkboxes: `- [ ] HH:mm - HH:mm Task` (or `- [ ] HH:mm Task` when duration unknown). Timed tasks live here only — never duplicated in Today tasks.
-- `# Today tasks` is exclusively for untimed tasks.
+- The daily note has a single H1 section: `# Timeline`. Both untimed and timed tasks live under it as checkboxes.
+- Untimed tasks (`- [ ] Task` with no time prefix) sit at the top of the section. Day Planner renders them as "All-day events" so the user can drag them onto a time slot.
+- Timed tasks (`- [ ] HH:mm - HH:mm Task`, or `- [ ] HH:mm Task` when duration unknown) follow, sorted chronologically.
 - "Urgent" is a visual highlight state (`==text==`), not a scheduling policy.
 
 ## Vault conventions
 ### Daily note location
 Daily notes live in the **vault root** (empty `daily_notes_folder` in config). `/planner-setup` configures Obsidian's core Daily Notes plugin (`.obsidian/daily-notes.json`) to use `templates/daily-note-template.md` as the template. If today's note is missing when `/new-day` runs, it creates it automatically from `templates/daily-note-template.md` — do not stop and ask the user to open Obsidian.
 
-### Daily note sections (in order)
-- `# Today tasks` — unscheduled tasks the user has not yet placed on the timeline
-- `# Timeline` — committed schedule; tasks with known times go here, not in Today tasks
-
-Both sections are H1. No extra heading before them (no date H1 — Obsidian shows the filename as the title). No "Candidate from backlog" or "Move back to backlog" sections in the final note — those are transient planning scratchpads, never persisted.
-
-A task must not appear in both sections. Once it has a time and is in the Timeline, remove it from Today tasks.
+### Daily note sections
+The daily note has exactly one H1 section: `# Timeline`. No extra heading before it (no date H1 — Obsidian shows the filename as the title). No "Candidate from backlog" or "Move back to backlog" sections in the final note — those are transient planning scratchpads, never persisted.
 
 ### Timeline format
-Checkbox list under H1 `# Timeline`. Use explicit ranges when duration is known; the last block of the day without a known duration ends at `bedtime` from config.
+Checkbox list under H1 `# Timeline`. Untimed entries appear first (as a contiguous block at the top — Day Planner shows them as all-day events), followed by timed entries sorted chronologically. Use explicit time ranges when duration is known; the last timed block of the day without a known duration ends at `bedtime` from config.
 ```md
 # Timeline
+- [ ] Reply to Sam
+- [ ] Read chapter 4
 - [ ] 08:00 - 08:30 Morning review
 - [ ] 09:00 - 10:00 Finish project proposal
 - [ ] 12:00 - 13:00 Lunch
 - [ ] 21:00 - 23:00 Evening routine
 ```
 When duration is unknown and the entry is not the last timed block, `- [ ] HH:mm Task` is acceptable (Day Planner stretches to the next block). For the **last** timed entry with no duration, write `- [ ] HH:mm - <bedtime> Task`.
+
+Once an untimed entry is given a time, rewrite it in place with the time prefix and re-sort so it sits in chronological order with the other timed entries. Never duplicate it.
 
 All times must be rounded to the nearest `min_block_minutes` increment (default 15): 12:06 → 12:00, 12:08 → 12:15. Never write an odd start time like 12:06 PM.
 

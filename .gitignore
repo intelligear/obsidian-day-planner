@@ -5,6 +5,7 @@
 .claude/settings.local.json
 
 # User data created after install (not part of the template)
+Backlog/
 zzArchive/
 *.canvas
 

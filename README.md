@@ -118,13 +118,10 @@ To review or change behavior later, run:
 
 ## 4. How tasks move through your vault
 
-A task can sit in one of three places:
+A task can sit in one of two places:
 
 - **Backlog** — category notes under `Backlog/` (e.g. `Brain Dump.md`, `Wellbeing.md`). Each file is a flat list of `- [ ]` lines. Things you *might* do.
-- **Today tasks** — untimed work you've committed to today.
-- **Timeline** — timed blocks for today.
-
-Today tasks and Timeline are not separate files. They are two headings inside **one daily note** (e.g. `05-25 (Mon).md` at the vault root). Day Planner reads the `# Timeline` section for its sidebar.
+- **Timeline** — the single `# Timeline` section inside today's daily note (e.g. `05-25 (Mon).md` at the vault root). Holds everything you've committed to today: untimed entries sit at the top (Day Planner shows them as **all-day events**); timed entries follow in chronological order. Day Planner reads this section for its sidebar — drag an all-day item onto a time slot to schedule it.
 
 You can add a task anywhere directly — you don't have to start in the backlog.
 
@@ -142,11 +139,13 @@ You can add a task anywhere directly — you don't have to start in the backlog.
         ┌──────────────────────────────────────────────────────────────┐
         │     DAILY NOTE  (e.g. 05-25 (Mon).md)                        │
         │                                                              │
-        │   # Today tasks     ◀───────────▶     # Timeline             │
-        │   untimed work                        timed blocks           │
-        │                     "schedule X                              │
-        │                      at HH:mm"                               │
-        │                     (or drag in Day Planner)                 │
+        │   # Timeline                                                 │
+        │     - [ ] Reply to Sam            ← untimed (all-day in      │
+        │     - [ ] Read chapter 4            Day Planner; drag it     │
+        │                                     onto a time slot)        │
+        │     - [ ] 08:00 - 08:30 Morning review                       │
+        │     - [ ] 12:00 - 13:00 Lunch                                │
+        │     - [ ] 21:00 - 23:00 Evening routine                      │
         └──────────────────────────────────────────────────────────────┘
                        │
                        │ check the box  →  - [x]  (stays in the note)
@@ -155,38 +154,10 @@ You can add a task anywhere directly — you don't have to start in the backlog.
   Short-cuts (say to Claude or use a command):
     /add-task Buy milk                    → Backlog / Brain Dump (default)
     /add-task wellbeing: Book dentist     → Backlog / Wellbeing
-    "add X to today"                      → Today tasks in today's note
-    "schedule X at 14:00 today"           → Timeline
+    "add X to today"                      → untimed entry at top of Timeline
+    "schedule X at 14:00 today"           → timed entry in Timeline
 ```
 
-### By task type
-
-**Recurring** (wording like `everyday`, `every weekday`, `twice a week`, `at 7:15 AM every Sunday`)
-
-The backlog line stays forever — `/new-day` **copies** it into the daily note each time it applies. Timed copies go to Timeline; untimed copies go to Today tasks. Same-day repeats like `Cold shower x3` become three numbered lines (`(1st)`, `(2nd)`, `(3rd)`).
-
-**One-time (ad-hoc)**
-
-No recurrence in the text. When you pull one into today, `/new-day` **moves** it: removed from backlog, added to the daily note. To defer, ask Claude to move it back to its category note.
-
-**Completed (`- [x]`)**
-
-Stay in the daily note. The note is both plan and journal — Claude won't move finished work back to backlog.
-
-**Leftovers from yesterday**
-
-Nothing moves automatically overnight. Next `/new-day`, Claude may propose sending unfinished one-time tasks back to backlog or carrying them forward. You choose.
-
-### Who does what
-
-
-|                        | Typical actions                                                                                                            |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| **You in Obsidian**    | Check boxes, edit lines, drag blocks in Day Planner, type new tasks in backlog or daily notes.                             |
-| **You in Claude Code** | `/new-day`, `/add-task`, `/planner-config`, or chat: *schedule Lunch at 12:30*, *move X back to backlog*, *mark X urgent*. |
-| **Day Planner**        | Live sidebar for `# Timeline`; edits sync back to the daily note.                                                          |
-
-[![final-setup.png](https://i.postimg.cc/632n9D8f/final-setup.png)](https://postimg.cc/5YJ6gKqX)
 ---
 
 ## 5. Adding backlog tasks
@@ -229,15 +200,15 @@ Without a category prefix, tasks go to your default backlog page (usually Brain 
 1. **Run `/new-day`** in Claude Code (or say `today`). Claude opens or creates today's note, pulls in recurring work, and shows one numbered proposal — tasks to add, yesterday's carryovers, Brain Dump triage. Reply once: `Y`, `n`, or `n 3,5` to skip items. Safe to run again later; already-imported recurring tasks won't duplicate.
 2. **Open Day Planner.** Command Palette (`Cmd/Ctrl+P`) → *Day Planner: Show timeline*, then pin the panel.
 3. **During the day.** Edit the note, drag blocks, or ask Claude (*move Lunch to 12:30*, *send Read chapter 4 back to Study*, *mark Call contractor urgent*).
-4. **Put a Today task on the Timeline**
+4. **Give an untimed task a time slot**
 
+| Method        | How                                                                                                |
+| ------------- | -------------------------------------------------------------------------------------------------- |
+| Ask Claude    | *Schedule X at 14:00* — rewrites the line with a `HH:mm - HH:mm` prefix and re-sorts it            |
+| Edit the note | Add `HH:mm - HH:mm ` in front of the task text and move the line into chronological position       |
+| Day Planner   | Drag the all-day entry onto a time slot — Day Planner rewrites the line in the note for you        |
 
-| Method        | How                                                                                      |
-| ------------- | ---------------------------------------------------------------------------------------- |
-| Ask Claude    | *Schedule X at 14:00* — moves the task and adds a timed Timeline line                    |
-| Edit the note | Add a `- [ ] HH:mm - HH:mm …` line under `# Timeline`, remove it from Today tasks        |
-| Day Planner   | Drag on the timeline to create a block, then paste the task name into the note if needed |
-
+[![final-setup.png](https://i.postimg.cc/632n9D8f/final-setup.png)](https://postimg.cc/5YJ6gKqX)
 
 ---
 
@@ -250,8 +221,8 @@ Each run, Claude scans your backlog and yesterday's note, then does two things: 
 
 | Kind of task                                                                             | What happens                                                                                                                       |
 | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **Daily recurring with a time** (`everyday`, `every weekday`, `at 4 PM every Sunday`, …) | Copied straight into **Timeline** (if auto-import is on — default)                                                                 |
-| **Daily recurring without a time**                                                       | Copied into **Today tasks** (if auto-import is on)                                                                                 |
+| **Daily recurring with a time** (`everyday`, `every weekday`, `at 4 PM every Sunday`, …) | Copied straight into **Timeline** as a timed entry (if auto-import is on — default)                                                |
+| **Daily recurring without a time**                                                       | Copied into the **untimed block at the top of Timeline** (if auto-import is on)                                                    |
 | **Flexible recurring** (`twice a week`, `once a month`)                                  | Offered in the proposal only if you haven't checked it off enough times in the current week (or month window)                      |
 | **Urgent** (`==highlighted text==`)                                                      | Always in the proposal — never auto-imported, so you choose consciously                                                            |
 | **One-time**                                                                             | A small sample per category in the proposal (default: one task per backlog note); say *show more from Wellbeing* for a longer list |
@@ -262,7 +233,7 @@ Each run, Claude scans your backlog and yesterday's note, then does two things: 
 
 **Proposal (everything else):** one numbered list — add to today, defer to backlog, sort Brain Dump items into categories. `Y` applies all; `n 3,5` skips those numbers. Accepting a **one-time** task removes it from backlog; accepting **recurring** copies it and leaves backlog unchanged.
 
-**Where tasks go:** timed → Timeline only; untimed → Today tasks only — never both.
+**Where tasks go:** everything lives under `# Timeline`. Untimed entries sit at the top (Day Planner shows them as all-day events you can drag onto a time slot); timed entries follow in chronological order. A task is never duplicated — give it a time and the same line moves into the chronological block.
 
 **Flexible recurring:** Claude counts checkoffs of the same task across daily notes in the current week (week starts on Monday by default). Done enough for the period? Skipped. Still due? Shows up like `(recurring: 1/2 done this week)`.
 
@@ -272,7 +243,7 @@ Each run, Claude scans your backlog and yesterday's note, then does two things: 
 
 ### Other tips
 
-- **Same-day multipliers:** `Walk x3` → three lines `(1st)`, `(2nd)`, `(3rd)` in Today tasks. `twice a week` is different — that's flexible recurring, not same-day expansion.
+- **Same-day multipliers:** `Walk x3` → three lines `(1st)`, `(2nd)`, `(3rd)` in the untimed block at the top of Timeline. `twice a week` is different — that's flexible recurring, not same-day expansion.
 - **No recycling completions:** checked-off tasks stay in the daily note; Claude won't move them back to backlog.
 - **Moved your Backlog folder?** Tell Claude where it is, or run `/planner-config` to point at the new location.
 - **Multiple devices:** the vault is plain files — use iCloud, Obsidian Sync, Syncthing, Git, or any folder sync.

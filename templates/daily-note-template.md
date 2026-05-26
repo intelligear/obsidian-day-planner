@@ -1,3 +1,1 @@
-# Today tasks
-
 # Timeline
