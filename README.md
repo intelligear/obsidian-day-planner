@@ -181,7 +181,7 @@ Nothing moves automatically overnight. Next `/new-day`, Claude may propose sendi
 | **You in Claude Code** | `/new-day`, `/add-task`, `/planner-config`, or chat: *schedule Lunch at 12:30*, *move X back to backlog*, *mark X urgent*. |
 | **Day Planner**        | Live sidebar for `# Timeline`; edits sync back to the daily note.                                                          |
 
-
+[![final-setup.png](https://i.postimg.cc/632n9D8f/final-setup.png)](https://postimg.cc/5YJ6gKqX)
 ---
 
 ## 5. Adding backlog tasks
