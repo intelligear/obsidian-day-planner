@@ -22,8 +22,7 @@ Daily planning provides a continuous reality check on your life and career. It r
 
 ## 1. Prerequisites
 
-**Supported platform:** macOS. The date/archive helpers under `.claude/scripts/` rely on BSD `date` and `stat`. On Linux you can still run `/new-day` from Claude Code (it works without the scripts) or adapt the scripts for GNU `date`.
-
+**Supported platform:** macOS.
 **Required:**
 
 1. **Obsidian** — [https://obsidian.md](https://obsidian.md) (free)
