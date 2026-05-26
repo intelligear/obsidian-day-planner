@@ -22,6 +22,8 @@ Daily planning provides a continuous reality check on your life and career. It r
 
 ## 1. Prerequisites
 
+**Supported platform:** macOS. The date/archive helpers under `.claude/scripts/` rely on BSD `date` and `stat`. On Linux you can still run `/new-day` from Claude Code (it works without the scripts) or adapt the scripts for GNU `date`.
+
 **Required:**
 
 1. **Obsidian** — [https://obsidian.md](https://obsidian.md) (free)
@@ -31,11 +33,10 @@ Daily planning provides a continuous reality check on your life and career. It r
    claude --version
   ```
 
-**Shell scripts:** date/archive helpers under `.claude/scripts/` use BSD `date` and `stat` (macOS). On Linux, run `/new-day` from Claude Code (it can work without the scripts) or adapt the scripts for GNU `date`.
+**Optional:**
 
-**Optional (only if you install via `npx` below):**
-
-- **Node.js** — [https://nodejs.org](https://nodejs.org) so `npx` is available. Verify with `node -v`. Not needed if you copy the files from a ZIP instead.
+- **Node.js** — [https://nodejs.org](https://nodejs.org) so `npx` is available (only needed for the `npx degit` install method below). Verify with `node -v`. Not needed if you copy the files from a ZIP instead.
+- **Obsidian Terminal plugin** — [polyipseity/obsidian-terminal](https://github.com/polyipseity/obsidian-terminal). Lets you run Claude Code from an integrated terminal inside Obsidian, so you don't have to switch windows.
 
 ---
 
