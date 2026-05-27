@@ -18,6 +18,10 @@ Daily planning provides a continuous reality check on your life and career. It r
 
 **A plan isn’t a rigid script, it is a compass. It does not make the day predictable, it makes the day intentional.**
 
+## What this is not
+
+This repo is not intended for project management or knowledge management, those workflows are better handled in a dedicated vault or separate app tailored to those needs.
+
 ---
 
 ## 1. Prerequisites
