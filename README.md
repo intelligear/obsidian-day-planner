@@ -208,7 +208,7 @@ Without a category prefix, tasks go to your default backlog page (usually Brain 
 | Edit the note | Add `HH:mm - HH:mm ` in front of the task text and move the line into chronological position       |
 | Day Planner   | Drag the all-day entry onto a time slot — Day Planner rewrites the line in the note for you        |
 
-[![final-setup.png](https://i.postimg.cc/632n9D8f/final-setup.png)](https://postimg.cc/5YJ6gKqX)
+[![final-setup.png](https://i.postimg.cc/wBqZptsC/final-setup.png)](https://postimg.cc/pmSqQLCC)
 
 ---
 
