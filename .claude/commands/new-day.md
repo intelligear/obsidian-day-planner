@@ -45,9 +45,11 @@ Do not announce these steps individually — surface them only in the final repo
 - Classify each unchecked line in yesterday's `# Timeline` as recurring vs ad-hoc using the rule below; this drives the carryover bucket in Step 3.
 
 ### Classifying yesterday's unchecked tasks (recurring vs ad-hoc)
-With everything under a single `# Timeline`, the section no longer tells you whether a leftover is a recurring copy or a moved-out ad-hoc. Resolve it by matching against the current backlog.
+With everything under a single `# Timeline`, the section no longer tells you whether a leftover is a recurring copy or a moved-out ad-hoc. Resolve it using the tag fast-path first, then fall back to backlog matching.
 
 For each `- [ ] …` line in yesterday's `# Timeline` (skip `- [x]`):
+
+0. **Fast-path:** If the line contains ` (ad-hoc)` (appended when the task was first moved from backlog) → immediately classify as **ad-hoc one-time**; skip steps 1–3 for this line.
 
 1. **Normalize the daily-note line** to a comparison key:
    - Drop the leading `- [ ] ` (and any leading whitespace).
@@ -55,6 +57,7 @@ For each `- [ ] …` line in yesterday's `# Timeline` (skip `- [x]`):
    - Strip a multiplier marker: `\s*\((1st|2nd|3rd|\d+th)\)\s*` → remove (there is at most one, usually mid-line).
    - Strip duration tokens anywhere in the line: `\b\d+\s*(min|mins|minute|minutes|hr|hrs|hour|hours)\b` → remove. This catches trailing durations like `15 mins` on lines such as `08:15 - 08:30 Check Zillow messages 15 mins`, which exist when an untimed entry with a duration was later given a time slot.
    - Strip Obsidian highlight markers: `==` → remove.
+   - Strip the ad-hoc tag: `\s*\(ad-hoc\)` → remove (so stray untagged matches aren't affected by it).
    - Strip trailing commas and stray punctuation, collapse internal whitespace, lowercase.
 2. **Normalize each backlog line** the same way, plus also strip recurrence/duration metadata before lowercasing:
    - Recurrence hints: `\b(everyday|every weekday|every (mon|tues|wednes|thurs|fri|satur|sun)day|twice a (day|week|month)|once a (day|week|month)|\d+ times a (day|week|month)|x\s*\d+|till .+|until .+)\b` → remove.
@@ -178,8 +181,9 @@ Also accept free-form adjustments (e.g. "skip 3, also add 'Foo' to Today").
 ## Step 5 — Apply
 Apply only confirmed items:
 - **Candidates to add (recurring)** → copy (trimmed text) into today's note using placement rules above; leave backlog entry untouched.
-- **Candidates to add (one-time)** → move (remove from backlog), add to today's note using placement rules above.
-- **Move back to backlog** → only for one-time tasks: remove from today's note, append original text to the appropriate backlog category page.
+- **Candidates to add (one-time, from backlog)** → move (remove from backlog), add to today's note using placement rules above; append ` (ad-hoc)` to the task text so future `/new-day` runs can identify it instantly without backlog matching.
+- **Candidates to add (carryover ad-hoc from yesterday)** → copy into today's note; preserve the original time prefix if the leftover had one (place in timed block at that time, not the untimed block). Keep the ` (ad-hoc)` tag. If the leftover had only a start time (no end) and becomes the last timed entry, append `- <bedtime>`.
+- **Move back to backlog** → only for one-time tasks: remove from today's note, append original text (strip ` (ad-hoc)` before writing back) to the appropriate backlog category page.
 - **Brain Dump triage** → move the task from the default backlog page to the suggested category page.
 
 ## Step 6 — Report
