@@ -36,6 +36,14 @@ Accept either form:
 
 Trim whitespace. Preserve the user's exact task wording, including capitalization and punctuation. Do not paraphrase.
 
+## Urgency detection
+If the user's input contains an urgency signal — words or phrases like `urgent`, `high priority`, `asap`, `critical`, `important` — treat the task as urgent:
+- Strip the urgency word/phrase (and any surrounding punctuation or parentheses) from the task text.
+- Wrap the remaining task text in Obsidian highlight syntax: `==<task text>==`.
+- Write the line as `- [ ] ==<task text>==`.
+
+"Urgent" is a visual highlight state, not a scheduling field. Never copy the urgency word verbatim into the task text.
+
 ## File-write rules
 - Confirm the target backlog file exists; if it does not, ask the user before creating it.
 - Append the new `- [ ] ...` line at the end of the file (after the last existing task).
@@ -50,6 +58,6 @@ After writing, report a one-line confirmation: which file was updated and the ta
 
 ## Out of scope
 - Do not add the task to today's daily note. (Use `/new-day` for that.)
-- Do not mark urgency. (That is a daily-note concern.)
+- Urgency is expressed via `==highlight==` syntax only — never as a tag, word, or field in the task text.
 - Do not create new category pages without explicit user confirmation. When creating one, seed it with a single `- [ ] ` line before appending the new task.
 - Do not reorder or deduplicate existing tasks.
