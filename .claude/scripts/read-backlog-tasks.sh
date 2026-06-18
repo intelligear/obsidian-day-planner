@@ -36,6 +36,31 @@ is_wdrecur()  { matches "$1" '\b(every[ -]?week[ -]?days?|weekdays?|wekdays?)\b'
 has_namedday(){ matches "$1" '\bevery[ ]+(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)'; }
 hits_today()  { matches "$1" '\bevery\b' && matches "$1" "\b(${ABBR}|${FULL})\b"; }
 is_flexible() { matches "$1" '\b(once|twice|[0-9]+[ ]*x|[0-9]+[ ]+times?)[ ]+(a|per)[ ]+(week|month)\b'; }
+
+# Convert a 3-letter day abbreviation (case-insensitive) to ISO weekday number (1=Mon…7=Sun)
+day_to_num() {
+  case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
+    mon) echo 1 ;; tue) echo 2 ;; wed) echo 3 ;; thu) echo 4 ;;
+    fri) echo 5 ;; sat) echo 6 ;; sun) echo 7 ;; *) echo 0 ;;
+  esac
+}
+
+# Match "every Mon. - Fri." style day ranges; returns 0 if today falls within range
+is_range_recur() {
+  local range start_day end_day start_num end_num
+  range=$(echo "$1" | grep -oiE 'every[[:space:]]+(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\.?[[:space:]]*-[[:space:]]*(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\.?' | head -1) || true
+  [[ -z "$range" ]] && return 1
+  start_day=$(echo "$range" | grep -oiE '(Mon|Tue|Wed|Thu|Fri|Sat|Sun)' | sed -n '1p')
+  end_day=$(echo "$range"   | grep -oiE '(Mon|Tue|Wed|Thu|Fri|Sat|Sun)' | sed -n '2p')
+  start_num=$(day_to_num "$start_day")
+  end_num=$(day_to_num "$end_day")
+  [[ $start_num -eq 0 || $end_num -eq 0 ]] && return 1
+  if [[ $start_num -le $end_num ]]; then
+    [[ $DOW -ge $start_num && $DOW -le $end_num ]]
+  else
+    [[ $DOW -ge $start_num || $DOW -le $end_num ]]
+  fi
+}
 is_urgent()   { matches "$1" '==.+=='; }
 is_datehit()  { matches "$1" "${TARGET}|(^|[^0-9])${MD}([^0-9]|$)|\b${MNAME}[ ]+${DAYNUM}(st|nd|rd|th)?\b"; }
 
@@ -108,10 +133,11 @@ for mdfile in "$backlog_path"/*.md; do
 
     entry="${task}"$'\t'"${cat}"
 
-    if is_daily "$task";     then recurring+=("$entry")
-    elif is_wdrecur "$task"; then (( IS_WD )) && recurring+=("$entry")
-    elif has_namedday "$task"; then hits_today "$task" && weekday_today+=("$entry")
-    elif is_flexible "$task";  then flexible+=("$entry")
+    if is_daily "$task";          then recurring+=("$entry")
+    elif is_wdrecur "$task";      then (( IS_WD )) && recurring+=("$entry")
+    elif is_range_recur "$task";  then weekday_today+=("$entry")
+    elif has_namedday "$task";    then hits_today "$task" && weekday_today+=("$entry")
+    elif is_flexible "$task";     then flexible+=("$entry")
     elif is_datehit "$task";   then date_today+=("$entry")
     elif is_urgent "$task";    then eval "urgent_${safe}+=(\"\$task\")"
     else

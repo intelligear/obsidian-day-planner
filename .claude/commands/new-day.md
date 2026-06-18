@@ -42,7 +42,15 @@ Do not announce these steps individually — surface them only in the final repo
 - Today's backlog task data is already loaded from the `read-backlog-tasks.sh` output in Step 1 (includes `WEEK …` line for flexible recurring).
 - Read today's note and (if present) yesterday's note.
 - For flexible recurring tasks and Brain Dump triage, read the relevant backlog files only as needed.
-- Classify each unchecked line in yesterday's `# Timeline` as recurring vs ad-hoc using the rule below; this drives the carryover bucket in Step 3.
+- Classify **every** unchecked line in yesterday's `# Timeline` as recurring vs ad-hoc using the rule below; this drives the carryover bucket in Step 3.
+
+### Mandatory ad-hoc audit
+After classifying, produce an internal checklist of all ad-hoc items found in yesterday's note (both checked and unchecked). For each unchecked ad-hoc item, verify it is accounted for by one of:
+- Already present in today's note (carry-forward happened on a prior re-run), OR
+- Being proposed in the Step 3 carryover bucket, OR
+- Already completed (- [x]) — those stay in yesterday's note, nothing to do.
+
+If an unchecked ad-hoc item is not yet in today's note and not in the proposal, add it to the proposal. **No ad-hoc leftover may be silently dropped.**
 
 ### Classifying yesterday's unchecked tasks (recurring vs ad-hoc)
 With everything under a single `# Timeline`, the section no longer tells you whether a leftover is a recurring copy or a moved-out ad-hoc. Resolve it using the tag fast-path first, then fall back to backlog matching.
@@ -88,9 +96,9 @@ Brain Dump triage:
 ```
 
 Selection heuristics:
-- Prefer recently discussed or urgent-highlighted tasks.
-- Prefer carryover unfinished tasks from yesterday.
-- Keep each bucket concise (aim 3–5 items).
+- **Carryover ad-hoc items (from yesterday) are mandatory — show ALL of them.** Do not cap or drop any.
+- Prefer recently discussed or urgent-highlighted tasks for the "new from backlog" suggestions.
+- Keep the optional buckets (flexible recurring, new ad-hoc from backlog, Brain Dump triage) concise (aim 3–5 items combined). Carryovers are not subject to this cap.
 - For triage, match wording to the clearest category; if vague, suggest keeping it in the default page.
 
 ### Recurring vs one-time tasks — copy vs move
