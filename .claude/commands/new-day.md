@@ -53,11 +53,17 @@ After classifying, produce an internal checklist of all ad-hoc items found in ye
 If an unchecked ad-hoc item is not yet in today's note and not in the proposal, add it to the proposal. **No ad-hoc leftover may be silently dropped.**
 
 ### Classifying yesterday's unchecked tasks (recurring vs ad-hoc)
-With everything under a single `# Timeline`, the section no longer tells you whether a leftover is a recurring copy or a moved-out ad-hoc. Resolve it using the tag fast-path first, then fall back to backlog matching.
+With everything under a single `# Timeline`, the section no longer tells you whether a leftover is a recurring copy or a moved-out ad-hoc. Resolve it using the tag fast-path first, then fall back to the script-based lookup.
+
+**First, run the backlog parser for yesterday's date** (once, before processing individual lines):
+```
+bash .claude/scripts/read-backlog-tasks.sh <yesterday-YYYY-MM-DD>
+```
+Collect the raw task text from the **SCHEDULED** and **UNSCHEDULED RECURRING** sections — these are the authoritative recurring tasks for yesterday. This sidesteps recurrence-format parsing entirely; the script already handles every weekday format (full names, abbreviations with/without dots, ranges like `Mon. - Fri.`, ordinals like `2nd Monday`, mixed multi-day lists like `every Wed., Thu.`, etc.).
 
 For each `- [ ] …` line in yesterday's `# Timeline` (skip `- [x]`):
 
-0. **Fast-path:** If the line contains ` (ad-hoc)` (appended when the task was first moved from backlog) → immediately classify as **ad-hoc one-time**; skip steps 1–3 for this line.
+0. **Fast-path:** If the line contains ` (ad-hoc)` → immediately classify as **ad-hoc one-time**; skip steps 1–3 for this line.
 
 1. **Normalize the daily-note line** to a comparison key:
    - Drop the leading `- [ ] ` (and any leading whitespace).
@@ -65,16 +71,27 @@ For each `- [ ] …` line in yesterday's `# Timeline` (skip `- [x]`):
    - Strip a multiplier marker: `\s*\((1st|2nd|3rd|\d+th)\)\s*` → remove (there is at most one, usually mid-line).
    - Strip duration tokens anywhere in the line: `\b\d+\s*(min|mins|minute|minutes|hr|hrs|hour|hours)\b` → remove. This catches trailing durations like `15 mins` on lines such as `08:15 - 08:30 Check Zillow messages 15 mins`, which exist when an untimed entry with a duration was later given a time slot.
    - Strip Obsidian highlight markers: `==` → remove.
-   - Strip the ad-hoc tag: `\s*\(ad-hoc\)` → remove (so stray untagged matches aren't affected by it).
+   - Strip the ad-hoc tag: `\s*\(ad-hoc\)` → remove.
    - Strip trailing commas and stray punctuation, collapse internal whitespace, lowercase.
-2. **Normalize each backlog line** the same way, plus also strip recurrence/duration metadata before lowercasing:
-   - Recurrence hints: `\b(everyday|every weekday|every (mon|tues|wednes|thurs|fri|satur|sun)day|twice a (day|week|month)|once a (day|week|month)|\d+ times a (day|week|month)|x\s*\d+|till .+|until .+)\b` → remove.
-   - Time/duration: `\b\d{1,2}(:\d{2})?\s*(am|pm)?(\s*-\s*\d{1,2}(:\d{2})?\s*(am|pm)?)?\b` and `\b\d+\s*(min|mins|minute|minutes|hour|hours|hr|hrs)\b` → remove.
-   - Strip trailing commas and stray punctuation, collapse whitespace, lowercase.
-3. **Compare.** Exact match on the normalized key → **recurring copy** (backlog still owns it; no carryover proposal — tomorrow's auto-import handles it). No match in any backlog page → **ad-hoc one-time** that was moved out; include in the Step 3 proposal as either *carry forward to today* or *move back to backlog*.
+
+2. **Normalize each task name from yesterday's SCHEDULED/UNSCHEDULED RECURRING:**
+   - SCHEDULED lines have format `HH:MM  <raw task text>  [Category]` — strip the leading time and trailing `[Category]` bracket first.
+   - UNSCHEDULED RECURRING lines have format `[Category]  <raw task text>` — strip the leading `[Category]` bracket first.
+   - Then strip all recurrence and time/duration metadata from the raw backlog text in this order:
+     1. `\bevery\b.+` → removes everything from "every" to end (covers `every Wed., Thu.`, `every Mon. - Fri.`, `every 2nd Monday of the month`, `5 hrs every Fri., Sat.`, `every Fri., Sat., 2 hrs every Sun.`, etc.)
+     2. `\beveryday\b` → standalone everyday not caught above
+     3. `\btwice a \w+\b`, `\bonce a \w+\b`, `\b\d+ times a \w+\b` → frequency hints
+     4. `\b\d{1,2}:\d{2}\s*(am|pm)?\s*-\s*\d{1,2}:\d{2}\s*(am|pm)?\b` → time ranges like `6:45 PM - 8:30 PM`
+     5. `\b\d{1,2}(:\d{2})?\s*(am|pm)\b` → single times like `7 AM`, `9:15 PM`
+     6. `\b\d+\.?\d*\s*(min|mins|minute|minutes|hr|hrs|hour|hours)\b` → durations (including decimals like `1.5 hour`)
+     7. `==` → highlight markers; `\s*\(ad-hoc\)` → ad-hoc tag
+     8. Strip trailing and leading separators: `[\s,;.|\-]+` from both ends
+     9. Collapse internal whitespace, lowercase.
+
+3. **Compare.** Match on normalized key → **recurring copy** (backlog still owns it; no carryover proposal — tomorrow's auto-import handles it). No match → **ad-hoc one-time** that was moved out; include in the Step 3 proposal as either *carry forward to today* or *move back to backlog*.
 
 Notes:
-- The regex above is the contract — do not relax it silently. If a line falls outside it (e.g. unusual unicode dashes), treat it as ad-hoc and surface it; better to over-propose than to silently swallow a leftover.
+- If a line falls outside normalization (e.g. unusual unicode dashes), treat it as ad-hoc and surface it; better to over-propose than to silently swallow a leftover.
 - A backlog match on a *checked* line (`- [x]`) doesn't matter — completed tasks stay put and are never carried.
 - For flexible recurring (`twice a week`), the completion-count logic in Step 3 takes precedence; do not also propose them as carryovers.
 
