@@ -203,9 +203,14 @@ Apply all? (Y/N, or numbers to skip, e.g. "n 3,5")
 ```
 Also accept free-form adjustments (e.g. "skip 3, also add 'Foo' to Today").
 
-**Parsing the reply:** `Y`/`y`/`yes` and `N`/`n`/`no` are equivalent regardless of case — normalize before matching, never treat casing as meaningful.
+**Parsing the reply:** `Y`/`y`/`yes`/`Yes`/`YES` and `N`/`n`/`no`/`No`/`NO` are equivalent regardless of case — normalize before matching, never treat casing as meaningful.
 
-**Disambiguating the reply:** only two shapes are unambiguous — a bare yes (apply everything) and `no <numbers>` (apply everything *except* those numbers, i.e. numbers = exclusion list). Any other shape mixing a yes/no word with a number list (e.g. `y 2, 7-10`, `only 2 and 7-10`, `just 3,5`) is ambiguous between "these are the exceptions" and "these are the only ones to apply" — do not guess. Restate your interpretation as an inclusion list ("Applying only: 2, 7-10 — correct?") and wait for confirmation before touching any files.
+**Disambiguating the reply:** the leading yes/no word fixes how trailing numbers are read — this is unambiguous, no restating needed:
+- bare `yes` → apply everything.
+- `yes <numbers>` (e.g. `y 3-7`, `yes 2, 7-10`) → **inclusion list**: apply *only* those numbers.
+- `no <numbers>` (e.g. `n 3,5`) → **exclusion list**: apply everything *except* those numbers.
+
+Free-form replies that carry a number list but no leading yes/no word (e.g. "only 2 and 7-10", "just 3,5") are still ambiguous — do not guess. Restate your interpretation as an inclusion list ("Applying only: 2, 7-10 — correct?") and wait for confirmation before touching any files.
 
 ## Step 5 — Apply
 Apply only confirmed items:
