@@ -114,8 +114,9 @@ Brain Dump triage:
 
 Selection heuristics:
 - **Carryover ad-hoc items (from yesterday) are mandatory — show ALL of them.** Do not cap or drop any.
+- **Flexible recurring candidates (Step 3 → Recurring tasks → FLEXIBLE) are mandatory — show ALL that qualify (count < N for the window).** Recurring means it must get done; never drop or cap these to make room for ad-hoc suggestions.
 - Prefer recently discussed or urgent-highlighted tasks for the "new from backlog" suggestions.
-- Keep the optional buckets (flexible recurring, new ad-hoc from backlog, Brain Dump triage) concise (aim 3–5 items combined). Carryovers are not subject to this cap.
+- Keep only the **new ad-hoc from backlog** and **Brain Dump triage** buckets concise (aim 3 items combined). This cap never applies to carryovers or flexible recurring — both of those are shown in full regardless of how long the list gets.
 - For triage, match wording to the clearest category; if vague, suggest keeping it in the default page.
 
 ### Recurring vs one-time tasks — copy vs move
