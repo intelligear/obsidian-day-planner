@@ -218,7 +218,7 @@ Apply only confirmed items:
 - **Candidates to add (recurring)** → copy (trimmed text) into today's note using placement rules above; leave backlog entry untouched.
 - **Candidates to add (one-time, from backlog)** → move (remove from backlog), add to today's note using placement rules above; append ` (ad-hoc)` to the task text so future `/new-day` runs can identify it instantly without backlog matching.
 - **Candidates to add (carryover ad-hoc from yesterday)** → copy into today's note; preserve the original time prefix if the leftover had one (place in timed block at that time, not the untimed block). Keep the ` (ad-hoc)` tag. If the leftover had only a start time (no end) and becomes the last timed entry, append `- <bedtime>`.
-- **Move back to backlog** → only for one-time tasks: remove from today's note, append original text (strip ` (ad-hoc)` before writing back) to the appropriate backlog category page.
+- **Move back to backlog** → only for one-time tasks: remove from today's note, append original text (strip ` (ad-hoc)` before writing back) to the appropriate backlog category page. Always write it as `- [ ]` — backlog pages hold only pending tasks; never append a `- [x]` line to a backlog file (see Guardrails).
 - **Brain Dump triage** → move the task from the default backlog page to the suggested category page.
 
 ## Step 6 — Report
@@ -237,6 +237,17 @@ If the TYPOS section is non-empty, append a short note listing the suspected mis
 Possible typos in backlog: "everday" → "everyday" (Wellbeing.md). Fix? (y/n)
 ```
 
+## Step 7 — Backlog hygiene check
+Any `- [x]` line found on a backlog category page is stray: per the canonical model (see `CLAUDE.md`), a completed task belongs in the daily note where it was finished, never on a backlog page. These are never written there by this skill (Step 5 always writes `- [ ]`) — they only appear via manual edits or an older version of the workflow.
+
+After Step 6's report, check the backlog files touched or read during this run (no need for a full-vault scan) for any `- [x]` lines. If found, report them and ask once, e.g.:
+```
+Found completed tasks sitting in the backlog (shouldn't happen — completed tasks belong in daily notes):
+  Brain Dump.md: "pack up", "Drive"
+Remove them from the backlog? (y/n)
+```
+On confirmation, delete those lines from the backlog file(s). Do not delete without asking. Skip this step entirely if none are found.
+
 ## Timeline edits (when the user asks for them)
 - Use `HH:mm - HH:mm` when duration is known.
 - Use `HH:mm` alone only when a later timed block follows; otherwise end at `bedtime`.
@@ -251,5 +262,6 @@ Possible typos in backlog: "everday" → "everyday" (Wellbeing.md). Fix? (y/n)
 - Never remove completed tasks from daily notes.
 - Never remove a recurring task from the backlog.
 - If a "move back to backlog" target is completed, refuse and explain that completed tasks stay in daily notes.
+- Never write a `- [x]` (completed) line to a backlog category page, in any step. Backlog pages hold only pending (`- [ ]`) tasks — completion state belongs to the daily note where the work happened. See Step 7 for cleaning up stray completed entries if found.
 - Preserve all existing user content.
 - If `backlog_dir` is missing, follow the edge case handling in `CLAUDE.md`.
