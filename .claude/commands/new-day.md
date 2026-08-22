@@ -213,6 +213,8 @@ Also accept free-form adjustments (e.g. "skip 3, also add 'Foo' to Today").
 
 Free-form replies that carry a number list but no leading yes/no word (e.g. "only 2 and 7-10", "just 3,5") are still ambiguous — do not guess. Restate your interpretation as an inclusion list ("Applying only: 2, 7-10 — correct?") and wait for confirmation before touching any files.
 
+**Carryover items are exempt from the numeric pick policy.** The inclusion/exclusion list (`yes <numbers>` / `no <numbers>`) governs only backlog-sourced candidates — new one-time ad-hoc suggestions and flexible recurring candidates. Carryover ad-hoc items from yesterday (Step 3's "Move back to backlog" / carry-forward bucket) are always applied, even if their number is missing from an inclusion list, unless the user's reply explicitly names and excludes that specific carryover item (e.g. "n 5" where 5 is a carryover, or "skip Popcorn selling appointment"). They are still numbered and shown in the proposal per the "mandatory — show ALL of them" rule in Step 3, but that numbering is for reference, not for opt-in.
+
 ## Step 5 — Apply
 Apply only confirmed items:
 - **Candidates to add (recurring)** → copy (trimmed text) into today's note using placement rules above; leave backlog entry untouched.
