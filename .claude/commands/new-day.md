@@ -34,7 +34,20 @@ Read `.claude/.config`. Then:
 
    If TYPOS is non-empty, collect for the final report — do not auto-fix in this step.
 
-5. If `archive_enabled` is `1` (`$TRUE`), run `bash .claude/scripts/archive-old-notes.sh` to move old daily notes to `zzArchive/`. Capture its output and include a one-line summary in the final report (e.g. "Archived 3 notes." or "Nothing to archive.").
+5. **Pull today's events from synced calendars (opt-in — only if `calendar_sync_names` is set in `.claude/.config`):**
+   - If `calendar_sync_names` is absent or empty, skip this step entirely — silently, no report line. Its absence means the user has not opted into calendar sync (set it via `/planner-setup` or `/planner-config`).
+   - Otherwise, split `calendar_sync_names` on commas into a list of calendar names (trim whitespace from each).
+   - Call `mcp__icloud-calendar__list_calendars` once. For each configured name, find the matching calendar (case-insensitive). If the MCP tool isn't available at all, skip this whole step and note it in the final report (e.g. "Calendar sync configured but icloud-calendar MCP is unavailable — skipped."). If an individual configured name has no matching calendar, skip just that one and note it (e.g. "Calendar \"Work\" not found — skipped.") — don't fail the others.
+   - For each matched calendar, call `mcp__icloud-calendar__get_events` with that calendar's id, `start_date` = yesterday's date and `end_date` = tomorrow's date (one extra UTC day of padding on each side, per the tool's own guidance on timezone drift).
+   - The tool returns timed events with UTC `startTime`/`endTime` and all-day events as plain `YYYY-MM-DD`. Convert timed instants to local time (the system's local timezone) and keep only events whose local date equals **today's date** (from step 1). Keep an all-day event if its date equals today.
+   - Format each kept event as a Timeline checkbox and tag it so it's recognizable as calendar-sourced:
+     - Timed, both start and end known → `- [ ] HH:mm - HH:mm <event title> (calendar)`
+     - Timed, no end → `- [ ] HH:mm <event title> (calendar)` (or `- [ ] HH:mm - <bedtime> <event title> (calendar)` if it would be the last timed block)
+     - All-day → `- [ ] <event title> (calendar)`, placed in the untimed block at the top
+   - Round times to the nearest `min_block_minutes` increment, same as every other Timeline entry.
+   - Insert using the normal placement rules (chronological among timed entries; untimed block at top for all-day). Skip any event already present in today's note — match by normalized title (strip the `(calendar)` tag, time prefix, and punctuation; lowercase) — so re-running `/new-day` mid-day doesn't duplicate events already imported or since manually edited. If two synced calendars have events with the same normalized title, still only insert one line.
+   - Track every event imported this run for the final report (Step 6), the same way auto-imported recurring tasks are tracked.
+6. If `archive_enabled` is `1` (`$TRUE`), run `bash .claude/scripts/archive-old-notes.sh` to move old daily notes to `zzArchive/`. Capture its output and include a one-line summary in the final report (e.g. "Archived 3 notes." or "Nothing to archive.").
 
 Do not announce these steps individually — surface them only in the final report.
 
@@ -63,7 +76,7 @@ Collect the raw task text from the **SCHEDULED** and **UNSCHEDULED RECURRING** s
 
 For each `- [ ] …` line in yesterday's `# Timeline` (skip `- [x]`):
 
-0. **Fast-path:** If the line contains ` (ad-hoc)` → immediately classify as **ad-hoc one-time**; skip steps 1–3 for this line.
+0. **Fast-path:** If the line contains ` (calendar)` → immediately classify as **calendar event**; leave it in yesterday's note untouched (not a carryover, not a candidate for "move back to backlog" — there is no backlog page for it, and today's own calendar pull in Step 1 already covers today). Skip steps 1–3 for this line. Otherwise, if the line contains ` (ad-hoc)` → immediately classify as **ad-hoc one-time**; skip steps 1–3 for this line.
 
 1. **Normalize the daily-note line** to a comparison key:
    - Drop the leading `- [ ] ` (and any leading whitespace).
@@ -232,6 +245,11 @@ If `auto_import_daily_recurring` is `1` (`$TRUE`), end the report with a section
 Auto-imported daily recurring tasks:
   Timed: Morning review, Morning run, Lunch, Evening routine
   Untimed: Meditation 15 mins, Weekly planning
+```
+
+If calendar sync is configured and any events were imported in Step 1, list them too (or note that a synced calendar was unavailable/not found):
+```
+Calendar events imported: 09:00 - 09:30 Dentist, 18:00 Dinner with Sam
 ```
 
 If the TYPOS section is non-empty, append a short note listing the suspected misspellings and ask whether to fix them. Example:

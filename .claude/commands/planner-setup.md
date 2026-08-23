@@ -5,10 +5,10 @@ Set up an Obsidian daily-planning workflow in the current vault.
 ## Purpose
 Initialize a vault structure for backlog pages, daily notes, archive handling, and Claude-assisted maintenance. The workflow assumes backlog tasks live in category pages under the configured backlog folder, active planned tasks live in daily notes, and completed tasks stay in the daily note as historical journal entries.
 
-## Step 0 — Plugin detection
-Before asking any questions, scan `.obsidian/plugins/` (if it exists) and note:
-- Whether `obsidian-day-planner` is already installed.
-- Any other plugins, listed for information only.
+## Step 0 — Plugin and MCP detection
+Before asking any questions, note:
+- Scan `.obsidian/plugins/` (if it exists): whether `obsidian-day-planner` is already installed, and any other plugins (for information only).
+- Run `claude mcp list` and check whether an MCP server named `icloud-calendar` is present and connected.
 
 ## Interaction contract
 Ask the user these questions in order and wait for answers before making changes:
@@ -24,6 +24,9 @@ Ask the user these questions in order and wait for answers before making changes
 7. What time do you usually go to bed? This is used as the implied end of your last timeline block. Default: `23:00`
 8. Should example starter tasks be added to each backlog page? Default: `no`
 9. **Only ask if `obsidian-day-planner` is NOT already installed:** The Day Planner plugin provides a visual timeline sidebar that syncs bidirectionally with the daily note. Install it now? Default: `yes`
+10. **Only ask if the `icloud-calendar` MCP server is connected (from Step 0):** Should `/new-day` pull events from one or more of your iCloud calendars into today's Timeline automatically each morning? Default: `no`.
+    - If yes: call `mcp__icloud-calendar__list_calendars` and show the user the available calendar names, then ask which one(s) to sync — a comma-separated list (e.g. `Family, Work`). Confirm each name matches a real calendar before saving.
+    - If the MCP server isn't connected, skip this question entirely — don't mention it. (The user can connect it later via `.claude/scripts/setup-mcp.sh` and revisit this in `/planner-config`.)
 
 ## Actions
 After collecting answers:
@@ -56,6 +59,12 @@ After collecting answers:
    ```
    Include only the keys listed above. Do NOT include `official_skills_installed` or `backlog_categories` — these are derived at runtime.
    **`archive_after_days` must be omitted when `archive_enabled` is `$FALSE`** — write it only when archive is enabled.
+
+   **If the user opted into calendar sync in question 10**, also add:
+   ```bash
+   calendar_sync_names="Family,Work"
+   ```
+   a comma-separated list of the exact calendar names they chose (quote the value; no spaces around commas). **If they declined, or the question was never asked (MCP not connected), omit this key entirely** — its absence is what tells `/new-day` calendar sync is off. Never write it as an empty string.
 6. **Obsidian core plugin configuration:**
    - Write `.obsidian/templates.json` (read first if the file exists, then do a targeted merge — do not overwrite unrelated settings):
      - `folder`: `"templates"`
@@ -100,4 +109,4 @@ No date H1. A single `# Timeline` H1 section — all task checkboxes (untimed at
 - Installing official skills should be opt-out, not mandatory, and should not overwrite an existing custom `.claude/` setup without confirmation.
 
 ## Final response
-Summarize exactly what was created. Show: detected plugins, any plugin installs or config changes, the resulting config values written to `.claude/.config`, and the folder/file structure created. If Day Planner was freshly installed, remind the user to restart Obsidian and trust the plugin.
+Summarize exactly what was created. Show: detected plugins, any plugin installs or config changes, the resulting config values written to `.claude/.config`, and the folder/file structure created. If Day Planner was freshly installed, remind the user to restart Obsidian and trust the plugin. If calendar sync was enabled, confirm which calendar(s) `/new-day` will pull from.

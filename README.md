@@ -255,6 +255,8 @@ Each run, Claude scans your backlog and yesterday's note, then does two things: 
 
 Claude Code can read and write your iCloud Calendar and macOS Reminders directly, so it can cross-check the Timeline against your calendar or turn a task into a native reminder. This is optional and off by default — it registers two MCP servers with the `claude` CLI.
 
+Once `icloud-calendar` is connected, you can opt in to having `/new-day` pull today's events (with time) from one or more of your calendars into the Timeline, tagged `(calendar)`. It's off by default — during `/planner-setup` you'll be asked which calendar(s) to sync (if the server is connected), or add/change it anytime with `/planner-config` by setting `calendar_sync_names` (a comma-separated list, e.g. `Family, Work`). No key in `.claude/.config` means sync stays off.
+
 Run the bundled setup script from the vault folder:
 
 ```bash

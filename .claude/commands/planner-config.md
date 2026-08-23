@@ -24,6 +24,7 @@ Provide a single place to review and change workflow settings without manually e
    - `auto_import_daily_recurring` — when on, daily and weekday recurring tasks are added to today automatically without asking you each time (shown as `true`/`false`)
    - `week_start` — which day your week starts on; used with `get-week-range.sh` / `read-backlog-tasks.sh` to count flexible recurring completions (e.g. `twice a week` from this Monday through Sunday)
    - `daily_adhoc_task_per_category` — how many backlog tasks per category Claude shows you each morning to consider for today (default `1`; raise it to see more options at once)
+   - `calendar_sync_names` — comma-separated iCloud calendar names that `/new-day` pulls today's events from (requires the `icloud-calendar` MCP server to be connected). Show as "not configured / off" when the key is absent.
 3. Ask: "Would you like to update any of these settings? If yes, tell me which ones and the new values."
 4. If the user specifies changes:
    - Validate the new values (e.g. folder paths end with `/`, retention is a positive integer, booleans are recognisable).
@@ -33,6 +34,8 @@ Provide a single place to review and change workflow settings without manually e
    - Apply updates to `.claude/.config`.
    - If `backlog_dir` changed, update `.claude/settings.json` (see table below).
    - If any other plugin-sync setting changed (see table below), update the corresponding Obsidian plugin file(s).
+   - If the user wants to turn calendar sync **on** (setting or adding to `calendar_sync_names`): check that the `icloud-calendar` MCP server is connected (`claude mcp list`) — if not, tell them to run `.claude/scripts/setup-mcp.sh` first and stop. If connected, call `mcp__icloud-calendar__list_calendars` and confirm each name they give matches a real calendar before writing it.
+   - If the user wants to turn calendar sync **off**, remove the `calendar_sync_names` key from `.claude/.config` entirely (do not write it as an empty string — its absence is what disables the feature).
 5. If the user declines, end the interaction.
 
 ## Guardrails
@@ -41,6 +44,7 @@ Provide a single place to review and change workflow settings without manually e
 - If `archive_enabled` is set to `$FALSE`, remove `archive_after_days` and `archive_dir` from the config (or comment them out).
 - If `backlog_dir` is changed, warn the user that the new directory must already exist (or will need to be created manually).
 - Never modify the `readonly TRUE=1` / `readonly FALSE=0` constant lines.
+- Never write `calendar_sync_names` as an empty string — omit the key entirely to disable calendar sync.
 
 ## Plugin sync
 Some settings must be kept in sync with Obsidian plugin config files. When the user changes any of the following, update both `.claude/.config` **and** the corresponding plugin file(s) in the same operation:
