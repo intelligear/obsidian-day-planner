@@ -249,3 +249,35 @@ Each run, Claude scans your backlog and yesterday's note, then does two things: 
 - **Multiple devices:** the vault is plain files — use iCloud, Obsidian Sync, Syncthing, Git, or any folder sync.
 - **Start fresh today:** delete today's daily note and run `/new-day` again. Backlog remains the long-term list.
 
+---
+
+## 8. Optional: connect iCloud Calendar and macOS Reminders (MCP)
+
+Claude Code can read and write your iCloud Calendar and macOS Reminders directly, so it can cross-check the Timeline against your calendar or turn a task into a native reminder. This is optional and off by default — it registers two MCP servers with the `claude` CLI.
+
+Run the bundled setup script from the vault folder:
+
+```bash
+.claude/scripts/setup-mcp.sh
+```
+
+It will:
+1. Prompt for your iCloud username and an **app-specific password** (generate one at [appleid.apple.com](https://appleid.apple.com) → Sign-In and Security → App-Specific Passwords — never use your real Apple ID password) and register the `icloud-calendar` MCP server.
+2. Register the `reminders-mcp` MCP server (macOS only, talks to Reminders.app via AppleScript — no credentials needed).
+
+You can also skip the prompts by exporting credentials first:
+
+```bash
+ICLOUD_USERNAME="you@icloud.com" ICLOUD_PASSWORD="app-specific-password" .claude/scripts/setup-mcp.sh
+```
+
+Verify both are connected:
+
+```bash
+claude mcp list
+```
+
+Then **restart Claude Code** (or start a new session) so the new tools are picked up. The first time a Reminders or Calendar tool actually runs, macOS will prompt for automation access — approve it under *System Settings → Privacy & Security*.
+
+> **Note:** these servers are registered in your local Claude Code config (`~/.claude.json` or `~/.claude-personal/.claude.json`), not in this repo, and store your iCloud credentials there — nothing is committed to git.
+
