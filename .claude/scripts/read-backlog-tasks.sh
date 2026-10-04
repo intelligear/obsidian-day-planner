@@ -35,7 +35,7 @@ is_daily()    { matches "$1" '\b(every[ -]?days?|everyday|everydya|everday|evryd
 is_wdrecur()  { matches "$1" '\b(every[ -]?week[ -]?days?|weekdays?|wekdays?)\b'; }
 has_namedday(){ matches "$1" '\bevery[ ]+(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)'; }
 hits_today()  { matches "$1" '\bevery\b' && matches "$1" "\b(${ABBR}|${FULL})\b"; }
-is_flexible() { matches "$1" '\b(once|twice|[0-9]+[ ]*x|[0-9]+[ ]+times?)[ ]+(a|per)[ ]+(week|month)\b'; }
+is_flexible() { matches "$1" '\b(once|twice|[0-9]+[ ]*x|[0-9]+[ ]+times?)[ ]+(a|per|every)[ ]+(week|month)\b'; }
 
 # Convert a 3-letter day abbreviation (case-insensitive) to ISO weekday number (1=Mon…7=Sun)
 day_to_num() {
