@@ -187,7 +187,7 @@ done
 
 # Flexible
 hdr "FLEXIBLE  (count - [x] completions ${WEEK_START} .. ${WEEK_END})"
-if [[ ${#flexible[@]:-0} -gt 0 ]]; then
+if [[ ${#flexible[@]} -gt 0 ]]; then
   for e in "${flexible[@]}"; do row "${e%$'\t'*}" "${e##*$'\t'}"; done
 else
   printf '  (none)\n'
@@ -215,7 +215,7 @@ done
 
 # Typos
 hdr "TYPOS"
-if [[ ${#typos[@]:-0} -gt 0 ]]; then
+if [[ ${#typos[@]} -gt 0 ]]; then
   for t in "${typos[@]}"; do printf '  %s\n' "$t"; done
 else
   printf '  (none)\n'
